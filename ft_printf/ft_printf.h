@@ -1,34 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_puthex.c                                        :+:      :+:    :+:   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: szaarour <szaarour@student.42beirut.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/29 14:06:59 by szaarour          #+#    #+#             */
-/*   Updated: 2025/12/29 14:06:59 by szaarour         ###   ########.fr       */
+/*   Created: 2025/12/29 12:24:47 by szaarour          #+#    #+#             */
+/*   Updated: 2025/12/29 12:24:47 by szaarour         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../ft_printf.h"
+#ifndef FT_PRINTF_H
+# define FT_PRINTF_H
 
-int	ft_puthex(unsigned int n, char format)
-{
-	int	count;
+# include <stdarg.h>
+# include <unistd.h>
+# include <stdarg.h>
 
-	count = 0;
-	if (n >= 16)
-		count += ft_puthex(n / 16, format);
-	if (format == 'x')
-		count += ft_putchar("0123456789abcdef"[n % 16]);
-	else if (format == 'X')
-		count += ft_putchar("0123456789ABCDEF"[n % 16]);
-	return (count);
-}
+int	ft_printf(const char *format, ...);
+int	ft_putchar(char c);
+int	ft_putstr(char *str);
+int	ft_putnbr(int n);
+int	ft_putunbr(unsigned int n);
+int	ft_puthex(unsigned int n, char format);
+int	ft_putptr(void *ptr);
+int	ft_convert(va_list *args, char c);
 
-// int main()
-// {
-// 	ft_puthex(670, 'X');
-//  ft_puthex(255, 'x');
-// 	return (0);
-// }
+#endif

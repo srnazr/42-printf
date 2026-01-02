@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "../ft_printf.h"
 
 int	ft_putnbr(int n)
 {
@@ -29,3 +29,10 @@ int	ft_putnbr(int n)
 	count += ft_putchar((n % 10) + '0');
 	return (count);
 }
+
+// int main()
+// {
+// 	ft_putnbr(-2147483648);
+//	ft_putnbr(12345);
+// 	return (0);
+// }

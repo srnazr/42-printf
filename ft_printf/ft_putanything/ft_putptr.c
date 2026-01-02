@@ -10,27 +10,29 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ft_printf.h"
+#include "../ft_printf.h"
 
-int	ft_puthex_ptr(unsigned long long n)
+int	ft_putptr(void *ptr)
 {
-	int	count;
+	unsigned long long	address;
+	int					count;
 
-	count = 0;
-	if (n >= 16)
-		count += ft_puthex_ptr(n / 16);
-	count += ft_putchar("0123456789abcdef"[n % 16]);
-	return (count);
-}
-
-int	ft_putptr(unsigned long long ptr)
-{
-	int	count;
-
+	address = (unsigned long long)ptr;
 	count = 0;
 	count += ft_putstr("0x");
-	if (ptr == 0)
-		return (count + ft_putchar('0'));
-	count += ft_puthex_ptr(ptr);
+	if (address == 0)
+		count += ft_putchar('0');
+	else
+		count += ft_puthex(address, 'x');
 	return (count);
 }
+
+// int main()
+// {
+//     int a = 42;
+//     int b = 45;
+//     ft_putptr(&a);
+//     ft_putchar('\n');
+//     ft_putptr(&b);
+//     return (0);
+// }
