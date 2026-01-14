@@ -1,6 +1,7 @@
 # ft_printf
 
-**Author:** Serena Zaarour  
+**Author:** Serena Zaarour <br>
+**Intra:** szaarour  
 **Cohort:** 1.1  
 **42 Campus:** Beirut  
 **Milestone:** 1  
@@ -68,7 +69,7 @@ Includes:
 - `ft_putnbr.c`
 - `ft_putunbr.c` (for unsigned numbers)
 - `ft_puthex.c` (for `%x` / `%X`)
-- `ft_putptr.c` (for `%p`, with `0x` prefix)
+- `ft_putptr.c` (for `%p`, with `0x` prefix. Prints `(nil)` in case of a NULL ptr like the GNU C Library) 
 
 This re-implementation allows character counting and cleaner integration with `ft_printf`.
 

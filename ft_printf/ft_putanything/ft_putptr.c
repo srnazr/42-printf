@@ -30,6 +30,8 @@ int	ft_putptr(void *ptr)
 
 	address = (unsigned long long)ptr;
 	count = 0;
+	if (ptr == NULL)
+		return (ft_putstr("(nil)"));
 	count += ft_putstr("0x");
 	if (address == 0)
 		count += ft_putchar('0');
