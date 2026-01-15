@@ -1,23 +1,37 @@
+*This project has been created as part of the 42 curriculum by szaarour.*
+
 # ft_printf
 
-**Author:** Serena Zaarour <br>
-**Intra:** szaarour  
-**Cohort:** 1.1  
-**42 Campus:** Beirut  
-**Milestone:** 1  
+## Description
+
+The **ft_printf** project is a reimplementation of the standard C `printf` function.
+The goal of this project is to understand how formatted output works internally in C,
+by recreating the behavior of `printf` for a defined set of conversion specifiers.
+
+This project focuses on:
+- Variadic functions (`va_list`, `va_start`, `va_arg`, `va_end`)
+- Parsing and interpreting format strings
+- Delegating format specifiers to the correct output handlers
+- Accurately counting and returning the number of printed characters
 
 ---
 
-## Project Overview
+## Algorithm & Design Choices
 
-`ft_printf` is a reimplementation of the standard C `printf` function.  
-The goal of this project is to understand:
+### High-level idea
 
-- Variadic functions (`va_list`, `va_start`, `va_arg`, `va_end`)
-- Format parsing
-- Basically, how `printf` works behind the scenes!
+The function processes the format string **character by character**:
 
-This implementation follows the 42 subject requirements (norminette and format specifiers) and recreates the behavior of `printf` for the supported conversion specifiers.
+1. Regular characters are printed directly
+2. When a `%` is encountered:
+   - The following character is interpreted as a format specifier
+   - The variadic argument list is accessed using `va_arg`
+3. The argument is passed to the appropriate output function
+4. Each output function prints its content and returns the number of characters printed
+5. `ft_printf` accumulates and returns the total character count
+
+This design mirrors the behavior of the real `printf` while keeping responsibilities
+clearly separated across files.
 
 ---
 
@@ -26,52 +40,50 @@ This implementation follows the 42 subject requirements (norminette and format s
 ### `ft_printf.c`
 The core function of the project.
 
-- Parses the format string character by character
+- Parses the format string
 - Detects `%` sequences
-- Initializes and manages the variadic argument list
-- Delegates conversions to the appropriate handler
-- Returns the total number of printed characters
+- Initializes and manages the `va_list`
+- Delegates work to the conversion handler
+- Returns the total number of characters printed
 
 ---
 
 ### `ft_convert.c`
-- Uses `va_list` to access variable arguments
-- Advances arguments using `va_arg`
-- Passes each argument to the correct conversion handler
-- Acts like a bridge between the format specifier and output functions
+Acts as a bridge between the format specifier and the output logic.
 
-Responsible for **deciding which function to call** based on the format specifier.
+Responsibilities:
+- Uses `va_arg` to retrieve the next argument
+- Determines which output function to call based on the format specifier
 
-For example:
-- `%c` → character printer
-- `%s` → string printer
-- `%d` / `%i` → integer printer
-- `%u` → unsigned integer printer
-- `%x` / `%X` → hexadecimal printer
-- `%p` → pointer printer
-- `%%` → literal `%`
+Supported conversions:
+- `%c` → character
+- `%s` → string
+- `%d` / `%i` → signed integer
+- `%u` → unsigned integer
+- `%x` / `%X` → hexadecimal
+- `%p` → pointer
+- `%%` → literal percent sign
 
-This file ensures separation of concerns by keeping format detection independent from output logic.
+This separation ensures clean and maintainable code.
 
 ---
 
-### `ft_putanything`
-A folder containing custom recreation of the needed output functions inspired by `libft`, **without file descriptors**.
+### `ft_putanything/`
+A directory containing custom output functions inspired by `libft`,
+but redesigned specifically for `ft_printf`.
 
 Key differences from `libft`:
-- All functions return the **number of characters printed**
-- No `fd` parameter
-- Designed specifically for `ft_printf`
+- No file descriptor parameter
+- Each function returns the number of characters printed
+- Designed to integrate seamlessly with `ft_printf`
 
 Includes:
 - `ft_putchar.c`
 - `ft_putstr.c`
 - `ft_putnbr.c`
-- `ft_putunbr.c` (for unsigned numbers)
-- `ft_puthex.c` (for `%x` / `%X`)
-- `ft_putptr.c` (for `%p`, with `0x` prefix. Prints `(nil)` in case of a NULL ptr like the GNU C Library) 
-
-This re-implementation allows character counting and cleaner integration with `ft_printf`.
+- `ft_putunbr.c`
+- `ft_puthex.c`
+- `ft_putptr.c`
 
 ---
 
@@ -79,7 +91,7 @@ This re-implementation allows character counting and cleaner integration with `f
 Handles hexadecimal output.
 
 - Supports lowercase (`%x`) and uppercase (`%X`)
-- Uses recursion to print digits in correct order
+- Uses recursion to print digits in the correct order
 - Returns the number of characters printed
 
 ---
@@ -88,9 +100,9 @@ Handles hexadecimal output.
 Handles pointer conversion (`%p`).
 
 - Prints the `0x` prefix
-- Converts the address to hexadecimal
-- Correctly handles `NULL` pointers
-- Returns the total printed length
+- Converts addresses to hexadecimal
+- Prints `(nil)` for `NULL` pointers (GNU libc behavior)
+- Returns the total number of printed characters
 
 ---
 
@@ -102,6 +114,7 @@ Header file containing:
 ---
 
 ## How Variadic Arguments Work Here
+Varidadic functions can be created using the `<stdarg.h>` header file.
 
 1. `ft_printf` initializes a `va_list`
 2. Each `%` specifier triggers a call to the converter
@@ -117,7 +130,7 @@ This mirrors the behavior of the real `printf`.
 
 ---
 
-## Makefile & Build System
+## Instructions
 
 ### Build the library:
 ```bash
@@ -138,13 +151,51 @@ make fclean
 ## How to Use ft_printf
 
 ### Include the Header:
-```C
+```c
 #include "ft_printf.h"
 ```
-### Example Usage:
-```C
-ft_printf("Hello %s, number: %d, pointer: %p\n", "world", 42, &x);
+### Example `main.c`:
+```c
+#include "ft_printf.h"
+#include <stdio.h>
+
+int main()
+{
+ 	int len;
+ 	int n;
+
+ 	len = ft_printf("Hello %s, your score is %d out of %i. Hex: %x, Char: %c, Pointer: %p, Percent: %%\n", "Alice", 95, 100, 255,'A', &len);
+ 	ft_printf("Total length printed: %d\n", len);
+
+ 	n = printf("Hello %s, your score is %d out of %i. Hex: %x, Char: %c, Pointer: %p, Percent: %%\n", "Alice", 95, 100, 255, 'A', &n);
+ 	printf("Total length printed: %d\n", n);
+
+ 	return (0);
+}
 ```
+
 ---
 
-#### This project was completed as part of 42 Beirut, Cohort 1.1, Milestone 1.
+## References
+- man printf
+- man stdarg
+- https://en.cppreference.com/w/c/variadic.html
+- https://www.tutorialspoint.com/cprogramming/c_variadic_functions.htm
+- https://www.youtube.com/watch?v=Hb2m7htiKWM&t=60s
+
+### AI Usage
+AI was used as a teaching assistant.
+It was used to:
+- Answer my questions about variadic functions and how va_list works internally
+- Clarify format parsing strategies
+- Help reason about file organization and separation of concerns
+
+---
+
+**Author:** Serena Zaarour <br>
+**Intra:** szaarour  
+**Cohort:** 1.1  
+**42 Campus:** Beirut  
+**Milestone:** 1  
+
+---
